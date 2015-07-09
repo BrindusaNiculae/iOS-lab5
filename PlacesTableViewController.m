@@ -7,21 +7,39 @@
 //
 
 #import "PlacesTableViewController.h"
+@import GoogleMaps;
 
 @interface PlacesTableViewController ()
 
+@property(strong, atomic) NSMutableDictionary *resultDictionary;
+@property(strong, atomic) NSMutableArray *searchKeys;
+
 @end
 
-@implementation PlacesTableViewController
+
+@implementation PlacesTableViewController {
+    GMSPlacesClient *_placesClient;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _resultDictionary = [[NSMutableDictionary alloc] init];
+    _searchKeys = [[NSMutableArray alloc] init];
+    _placesClient = [[GMSPlacesClient alloc] init];
+    
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    for (char a = 'a'; a <= 'z'; a++) {
+        [self.searchKeys addObject:[NSString stringWithFormat:@"%c", a]];
+        [self placesAutocomplete:[NSString stringWithFormat:@"%c", a]];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -33,12 +51,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 3;
+    return [[self.resultDictionary allKeys] count];
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 10;
+    return [[self.resultDictionary objectForKey:[self.searchKeys objectAtIndex:section]] count];
+
 }
 
 
@@ -50,14 +70,20 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:cellIdentifier];
     }
     
-    //cell.textLabel.text = @"hello";
-    cell.textLabel.text = [NSString stringWithFormat:@"Row %lu, In section %lu.", indexPath.row, indexPath.section];
+
+    //cell.textLabel.text = [NSString stringWithFormat:@"Row %lu, In section %lu.", indexPath.row, indexPath.section];
+    NSString *key = [self.searchKeys objectAtIndex:indexPath.section];
+    NSArray *result = [self.resultDictionary objectForKey:key];
+    
+    GMSAutocompletePrediction *object =[result objectAtIndex:indexPath.row];
+    cell.textLabel.text = object.attributedFullText.string;
     return cell;
 }
 
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [NSString stringWithFormat:@"Section %lu", section];
+    return [self.searchKeys objectAtIndex:section];
+   
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -67,6 +93,26 @@
     return 30;
 }
 
+-(void) placesAutocomplete:(NSString *) key {
+    CLLocationCoordinate2D left = CLLocationCoordinate2DMake(44.437714, 26.070900);
+    CLLocationCoordinate2D right = CLLocationCoordinate2DMake(44.431278, 26.082401);
+    
+    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:left coordinate:right];
+    
+    [_placesClient autocompleteQuery:key
+                              bounds:bounds
+                              filter:nil
+                            callback:^(NSArray *results, NSError *error) {
+                                if (error != nil) {
+                                    NSLog(@"Autocomplete error %@", [error localizedDescription]);
+                                    return;
+                                }
+                                [self.resultDictionary setObject:results forKey:key];
+                                [self.tableView reloadData];
+                            }];
+    
+    
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
