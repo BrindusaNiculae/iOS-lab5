@@ -8,10 +8,14 @@
 
 #import "PlacesTableViewCell.h"
 
+
 @implementation PlacesTableViewCell
+
+
 
 - (void)awakeFromNib {
     // Initialization code
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

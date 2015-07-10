@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#include "DetailsViewController.h"
+#include "PlacesTableViewCell.h"
 
 @interface PlacesTableViewController : UITableViewController
 

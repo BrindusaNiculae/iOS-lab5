@@ -13,6 +13,7 @@
 
 @property(strong, atomic) NSMutableDictionary *resultDictionary;
 @property(strong, atomic) NSMutableArray *searchKeys;
+@property(strong, atomic) GMSPlace *place;
 
 @end
 
@@ -63,20 +64,21 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"cellIdentifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    
+    PlacesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:(indexPath.row % 2) ? @"placesEvenCell" : @"placesOddCell"];
     
     if( cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:cellIdentifier];
+        cell = [[PlacesTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier:(indexPath.row % 2) ? @"placesEvenCell" : @"placesOddCell"];
     }
     
 
-    //cell.textLabel.text = [NSString stringWithFormat:@"Row %lu, In section %lu.", indexPath.row, indexPath.section];
     NSString *key = [self.searchKeys objectAtIndex:indexPath.section];
     NSArray *result = [self.resultDictionary objectForKey:key];
     
     GMSAutocompletePrediction *object =[result objectAtIndex:indexPath.row];
-    cell.textLabel.text = object.attributedFullText.string;
+    //cell.textLabel.text = object.attributedFullText.string;
+    cell.label.text = object.attributedFullText.string;
     return cell;
 }
 
@@ -113,48 +115,47 @@
     
     
 }
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *key = [self.searchKeys objectAtIndex:indexPath.section];
+    NSArray *result = [self.resultDictionary objectForKey:key];
+    
+    GMSAutocompletePrediction *object =[result objectAtIndex:indexPath.row];
+    
+    NSString *placeID = object.placeID;
+    
+    //NSString *placeID = @"ChIJV4k8_9UodTERU5KXbkYpSYs";
+    
+    [_placesClient lookUpPlaceID:placeID callback:^(GMSPlace *place, NSError *error) {
+        if (error != nil) {
+            NSLog(@"Place Details error %@", [error localizedDescription]);
+            return;
+        }
+        
+        if (place != nil) {
+            NSLog(@"Place name %@", place.name);
+            NSLog(@"Place address %@", place.formattedAddress);
+            NSLog(@"Place placeID %@", place.placeID);
+            NSLog(@"Place attributions %@", place.attributions);
+        } else {
+            NSLog(@"No place details for %@", placeID);
+        }
+        self.place = place;
+        [self performSegueWithIdentifier:@"showDetails" sender:self];
+    }];
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Make sure your segue name in storyboard is the same as this line
+    if ([[segue identifier] isEqualToString:@"showDetails"])
+    {
+        // Get reference to the destination view controller
+        DetailsViewController *destinationViewController = [segue destinationViewController];
+        
+        destinationViewController.detailsPlace = self.place;
+    }
 }
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

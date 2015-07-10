@@ -10,4 +10,6 @@
 
 @interface PlacesTableViewCell : UITableViewCell
 
+@property(weak, nonatomic) IBOutlet UILabel *label;
+
 @end

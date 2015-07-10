@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@import GoogleMaps;
 
 @interface DetailsViewController : UIViewController
+
+@property(strong, atomic) GMSPlace *detailsPlace;
 
 @end
