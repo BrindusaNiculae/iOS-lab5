@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 @import GoogleMaps;
+
 
 @interface DetailsViewController : UIViewController
 

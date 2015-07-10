@@ -14,6 +14,8 @@
 @property(strong, atomic) NSMutableDictionary *resultDictionary;
 @property(strong, atomic) NSMutableArray *searchKeys;
 @property(strong, atomic) GMSPlace *place;
+@property(strong, nonatomic) PositionManager *locations;
+
 
 @end
 
@@ -24,22 +26,31 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _locations = [PositionManager sharedInstance];
+    _locations.delegate = self;
+    
     _resultDictionary = [[NSMutableDictionary alloc] init];
     _searchKeys = [[NSMutableArray alloc] init];
     _placesClient = [[GMSPlacesClient alloc] init];
-    
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+    self.refreshControl =[[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(reloadLocations) forControlEvents:UIControlEventValueChanged];
+
+}
+
+-(void)reloadLocations {
+    [self.locations requestLocation];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
-    for (char a = 'a'; a <= 'z'; a++) {
+    [_locations requestLocation];
+}
+
+-(void)myPosition:(CLLocation *)currentLocation {
+     for (char a = 'a'; a <= 'z'; a++) {
         [self.searchKeys addObject:[NSString stringWithFormat:@"%c", a]];
-        [self placesAutocomplete:[NSString stringWithFormat:@"%c", a]];
+        [self placesAutocompleteForLocation:currentLocation andKey:[NSString stringWithFormat:@"%c",a]];
+         [self.refreshControl endRefreshing];
     }
 }
 
@@ -93,6 +104,27 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 30;
+}
+
+-(void) placesAutocompleteForLocation:(CLLocation *) location andKey:(NSString *) key {
+    CLLocationCoordinate2D left = CLLocationCoordinate2DMake(location.coordinate.latitude +0.01, location.coordinate.longitude +0.01);
+    CLLocationCoordinate2D right = CLLocationCoordinate2DMake(location.coordinate.latitude -0.01, location.coordinate.longitude -0.01);
+
+    
+    GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:left coordinate:right];
+    
+    [_placesClient autocompleteQuery:key
+                              bounds:bounds
+                              filter:nil
+                            callback:^(NSArray *results, NSError *error) {
+                                if (error != nil) {
+                                    NSLog(@"Autocomplete error %@", [error localizedDescription]);
+                                    return;
+                                }
+                                [self.resultDictionary setObject:results forKey:key];
+                                [self.tableView reloadData];
+                            }];
+
 }
 
 -(void) placesAutocomplete:(NSString *) key {

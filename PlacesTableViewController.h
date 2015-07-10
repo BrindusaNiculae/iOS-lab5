@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #include "DetailsViewController.h"
 #include "PlacesTableViewCell.h"
+#include "PositionManager.h"
 
-@interface PlacesTableViewController : UITableViewController
+@interface PlacesTableViewController : UITableViewController <PositionProtocol>
 
 @end

@@ -17,6 +17,8 @@
 		0C7BAD161B4BC97800CB49B2 /* PlacesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C7BAD151B4BC97800CB49B2 /* PlacesTests.m */; };
 		0C7BAD251B4BCBB600CB49B2 /* Profile.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C7BAD241B4BCBB600CB49B2 /* Profile.m */; };
 		0C7BAD281B4BCCE000CB49B2 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C7BAD271B4BCCE000CB49B2 /* Settings.m */; };
+		0FBD0D311B4FFA4200AA7A02 /* PositionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBD0D2F1B4FFA4200AA7A02 /* PositionManager.m */; };
+		0FBD0D331B4FFFFB00AA7A02 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FBD0D321B4FFFFB00AA7A02 /* MapKit.framework */; };
 		8C731F351B4E72C2009C3028 /* PlacesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C731F341B4E72C2009C3028 /* PlacesTableViewController.m */; };
 		8C9E4D011B4FC63100D66B20 /* PlacesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E4D001B4FC63100D66B20 /* PlacesTableViewCell.m */; };
 		8CCDC80B1B4FB591005AE890 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCDC80A1B4FB591005AE890 /* DetailsViewController.m */; };
@@ -52,6 +54,9 @@
 		0C7BAD241B4BCBB600CB49B2 /* Profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Profile.m; sourceTree = "<group>"; };
 		0C7BAD261B4BCCE000CB49B2 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		0C7BAD271B4BCCE000CB49B2 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
+		0FBD0D2F1B4FFA4200AA7A02 /* PositionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionManager.m; sourceTree = "<group>"; };
+		0FBD0D301B4FFA4200AA7A02 /* PositionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionManager.h; sourceTree = "<group>"; };
+		0FBD0D321B4FFFFB00AA7A02 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		2DC4BAEBD8C58F6D50FC3EAE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8C731F331B4E72C2009C3028 /* PlacesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesTableViewController.h; sourceTree = "<group>"; };
 		8C731F341B4E72C2009C3028 /* PlacesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlacesTableViewController.m; sourceTree = "<group>"; };
@@ -68,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FBD0D331B4FFFFB00AA7A02 /* MapKit.framework in Frameworks */,
 				AB25DB9C6256FA3BC46F9EB8 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -170,6 +176,8 @@
 				0C7BAD011B4BC97700CB49B2 /* ViewController.m */,
 				8C731F331B4E72C2009C3028 /* PlacesTableViewController.h */,
 				8C731F341B4E72C2009C3028 /* PlacesTableViewController.m */,
+				0FBD0D2F1B4FFA4200AA7A02 /* PositionManager.m */,
+				0FBD0D301B4FFA4200AA7A02 /* PositionManager.h */,
 				8CCDC8091B4FB591005AE890 /* DetailsViewController.h */,
 				8CCDC80A1B4FB591005AE890 /* DetailsViewController.m */,
 				8C9E4CFF1B4FC63100D66B20 /* PlacesTableViewCell.h */,
@@ -181,6 +189,7 @@
 		21E0CA615321319E5B4BA442 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0FBD0D321B4FFFFB00AA7A02 /* MapKit.framework */,
 				8C9CAC88A1A71E6F664BBDEA /* libPods.a */,
 			);
 			name = Frameworks;
@@ -330,6 +339,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FBD0D311B4FFA4200AA7A02 /* PositionManager.m in Sources */,
 				0C7BACFC1B4BC97700CB49B2 /* AppDelegate.m in Sources */,
 				0C7BAD251B4BCBB600CB49B2 /* Profile.m in Sources */,
 				8C731F351B4E72C2009C3028 /* PlacesTableViewController.m in Sources */,
